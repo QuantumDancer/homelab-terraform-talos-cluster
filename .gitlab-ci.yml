@@ -1,0 +1,76 @@
+stages:
+  - test
+  - plan
+  - deploy
+
+include:
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+default:
+  image:
+    name: hashicorp/terraform:1.12.0
+    entrypoint: [""]
+
+variables:
+  TF_STATE_NAME: default
+  TF_HTTP_USERNAME: gitlab-ci-token
+  TF_HTTP_PASSWORD: ${CI_JOB_TOKEN}
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state
+
+.init_tf:
+  before_script:
+    - >-
+      terraform init
+      -backend-config="address=${TF_ADDRESS}/${TF_STATE_NAME}"
+      -backend-config="lock_address=${TF_ADDRESS}/${TF_STATE_NAME}/lock"
+      -backend-config="unlock_address=${TF_ADDRESS}/${TF_STATE_NAME}/lock"
+      -backend-config="lock_method=POST"
+      -backend-config="unlock_method=DELETE"
+      -backend-config="retry_wait_min=5"
+
+validate:
+  stage: test
+  extends: .init_tf
+  script: terraform validate
+
+format:
+  stage: test
+  script: terraform fmt -check
+
+lint:
+  stage: test
+  image:
+    name: ghcr.io/terraform-linters/tflint:v0.57.0
+    entrypoint: [""]
+  script:
+    - tflint --init
+    - tflint
+
+plan:
+  stage: plan
+  extends: .init_tf
+  script: terraform plan -out tfplan
+  artifacts:
+    paths:
+      - "tfplan"
+
+.apply:
+  extends: .init_tf
+  dependencies:
+    - plan
+  script: terraform apply tfplan
+  environment: prod
+
+apply_feature:
+  stage: deploy
+  extends: .apply
+  when: manual
+  except:
+    - main
+
+apply_main:
+  stage: deploy
+  extends: .apply
+  only:
+    - main
