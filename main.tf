@@ -1,0 +1,45 @@
+module "talos" {
+  source = "./modules/talos/"
+
+  # Provisions a Talos Linux Kubernetes cluster on Proxmox VE
+  # with custom image factory schematics and automated VM configuration
+
+  nodes = {
+    "talos1" = {
+      machine_type      = "control-plane"
+      proxmox_node_name = "proxmox-01"
+      vm_id             = 351
+      ip                = "192.168.30.51"
+    }
+    "talos2" = {
+      machine_type      = "control-plane"
+      proxmox_node_name = "proxmox-01"
+      vm_id             = 352
+      ip                = "192.168.30.52"
+    }
+    "talos3" = {
+      machine_type      = "control-plane"
+      proxmox_node_name = "proxmox-01"
+      vm_id             = 353
+      ip                = "192.168.30.53"
+    }
+
+  }
+
+  cluster = {
+    name                            = "Talos"
+    environment                     = "prod"
+    proxmox_datastore_id_vm_disk    = "local-zfs"
+    proxmox_datastore_id_cloud_init = "local-zfs"
+    dns_domain                      = "home.rottlr.de"
+    dns_servers                     = ["192.168.30.2", "1.1.1.1", "1.0.0.1"]
+    gateway                         = "192.168.30.1"
+    bridge                          = "vmbr1"
+  }
+
+  image = {
+    version              = "1.10.2"
+    proxmox_node_name    = "proxmox-01"
+    proxmox_datastore_id = "local"
+  }
+}
