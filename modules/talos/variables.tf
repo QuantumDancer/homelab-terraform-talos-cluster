@@ -43,3 +43,9 @@ variable "image" {
     proxmox_datastore_id = string                                        # Proxmox datastore ID where the image should be stored
   })
 }
+
+variable "vm_state" {
+  description = "Desired state of the VMs ('running' or 'stopped')"
+  type        = string
+  default     = "running"
+}

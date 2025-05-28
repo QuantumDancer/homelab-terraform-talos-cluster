@@ -7,6 +7,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   node_name = each.value.proxmox_node_name
   vm_id     = each.value.vm_id
+  started   = var.vm_state == "running"
 
   agent {
     enabled = true

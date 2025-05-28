@@ -2,6 +2,7 @@ stages:
   - test
   - plan
   - deploy
+  - cleanup
 
 include:
   - template: Jobs/SAST-IaC.gitlab-ci.yml
@@ -74,3 +75,19 @@ apply_main:
   extends: .apply
   only:
     - main
+
+cleanup:
+  stage: cleanup
+  extends: .init_tf
+  when: manual
+  script:
+    - terraform apply -var="vm_state=stopped" -auto-approve
+  environment: prod
+
+destroy:
+  stage: cleanup
+  extends: .init_tf
+  when: manual
+  script:
+    - terraform destroy -var="vm_state=stopped" -auto-approve
+  environment: prod

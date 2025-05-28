@@ -42,4 +42,6 @@ module "talos" {
     proxmox_node_name    = "proxmox-01"
     proxmox_datastore_id = "local"
   }
+
+  vm_state = var.vm_state
 }

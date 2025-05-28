@@ -18,3 +18,14 @@ variable "proxmox_ssh_private_key_location" {
   description = "Location of the private SSH key for the user specified in proxmox_username"
   type        = string
 }
+
+variable "vm_state" {
+  description = "Desired state of the VMs ('running' or 'stopped')"
+  type        = string
+  default     = "running"
+
+  validation {
+    condition     = contains(["running", "stopped"], var.vm_state)
+    error_message = "vm_state must be either 'running' or 'stopped'."
+  }
+}
