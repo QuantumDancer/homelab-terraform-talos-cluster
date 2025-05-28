@@ -1,0 +1,29 @@
+machine:
+  install:
+    disk: /dev/sda
+  network:
+    hostname: ${node_hostname}
+    interfaces:
+      - interface: eth0
+        dhcp: false
+        addresses:
+          - ${node_ip}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+        vip:
+          ip: ${cluster_vip}
+    nameservers:
+%{ for dns_server in dns_servers ~}
+      - ${dns_server}
+%{ endfor ~}
+  certSANs:
+    - ${cluster_endpoint}
+    - ${cluster_vip}
+    - ${node_ip}
+  nodeLabels:
+    topology.kubernetes.io/region: ${cluster_name}
+    topology.kubernetes.io/zone: ${proxmox_node_name}
+  time:
+    servers:
+      - ntp.metas.ch

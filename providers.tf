@@ -7,3 +7,7 @@ provider "proxmox" {
     private_key = file(var.proxmox_ssh_private_key_location)
   }
 }
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}

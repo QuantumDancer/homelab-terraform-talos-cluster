@@ -1,19 +1,11 @@
-output "vm_ids" {
-  description = "Map of node names to their VM IDs"
-  value       = { for k, v in proxmox_virtual_environment_vm.this : k => v.vm_id }
+output "talos_config" {
+  description = "Talos client configuration for cluster management"
+  value       = data.talos_client_configuration.this.talos_config
+  sensitive   = true
 }
 
-output "vm_ips" {
-  description = "Map of node names to their IP addresses"
-  value       = { for k, v in var.nodes : k => v.ip }
-}
-
-output "cluster_name" {
-  description = "Name of the Talos cluster"
-  value       = var.cluster.name
-}
-
-output "talos_image_id" {
-  description = "ID of the Talos image downloaded to Proxmox"
-  value       = proxmox_virtual_environment_download_file.this.id
+output "kube_config" {
+  description = "Kubernetes configuration for cluster access"
+  value       = var.vm_state == "running" ? talos_cluster_kubeconfig.this[0].kubeconfig_raw : null
+  sensitive   = true
 }

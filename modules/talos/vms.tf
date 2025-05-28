@@ -3,7 +3,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   name        = each.key
   description = var.cluster.name
-  tags        = ["Terraform", "K8s", "${var.cluster.name}-${var.cluster.environment}"]
+  tags        = ["terraform", "k8s", local.cluster_name]
 
   node_name = each.value.proxmox_node_name
   vm_id     = each.value.vm_id

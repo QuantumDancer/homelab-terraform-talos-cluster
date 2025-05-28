@@ -1,7 +1,7 @@
 variable "nodes" {
   description = "Node configuration of the Talos cluster"
   type = map(object({
-    machine_type      = string                 # Type of the VM ("control-plane" or "worker")
+    machine_type      = string                 # Type of the VM ("controlplane" or "worker")
     proxmox_node_name = string                 # The name of the Proxmox node to assign the VM to (overrides cluster default)
     vm_id             = optional(number)       # ID of the VM
     cpu               = optional(number, 4)    # Number of CPU cores
@@ -12,9 +12,9 @@ variable "nodes" {
 
   validation {
     condition = alltrue([
-      for node in var.nodes : contains(["control-plane", "worker"], node.machine_type)
+      for node in var.nodes : contains(["controlplane", "worker"], node.machine_type)
     ])
-    error_message = "The machine_type must be either 'control-plane' or 'worker'."
+    error_message = "The machine_type must be either 'controlplane' or 'worker'."
   }
 }
 
@@ -29,6 +29,10 @@ variable "cluster" {
     dns_servers                     = optional(list(string)) # DNS servers for VMs
     gateway                         = optional(string)       # IPv4 gateway for VMs
     bridge                          = string                 # Network bridge for VMs
+    talos_version                   = string                 # Version of Talos Linux
+    kubernetes_version              = string                 # Version of Kubernetes
+    kubernetes_api_endpoint_url     = string                 # Endpoint of the Kubernetes API
+    kubernetes_api_vip              = string                 # VIP of the Kubernetes API
   })
 }
 
@@ -48,4 +52,9 @@ variable "vm_state" {
   description = "Desired state of the VMs ('running' or 'stopped')"
   type        = string
   default     = "running"
+}
+
+variable "cloudflare_zone_id" {
+  type        = string
+  description = "Cloudflare Zone ID"
 }

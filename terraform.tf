@@ -12,5 +12,9 @@ terraform {
       version = "0.8.1"
     }
 
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "5.5.0"
+    }
   }
 }
