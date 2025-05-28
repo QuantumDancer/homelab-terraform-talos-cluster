@@ -52,12 +52,8 @@ cat ~/.ssh/id_ed25519 # Note down for later
 Set the following variables, either via a `.tfvars` file or via environment variables (`TF_VAR_*`).
 
 ```terraform
-proxmox_endpoint  = "https://<proxmox-address>:8006"
-proxmox_api_token = "terraform@pve!provider=<token>"
-proxmox_username  = "terraform"
-proxmox_ssh_private_key = <<-EOF
------BEGIN OPENSSH PRIVATE KEY-----
-...
------END OPENSSH PRIVATE KEY-----
-EOF
+proxmox_endpoint                 = "https://<proxmox-address>:8006"
+proxmox_api_token                = "terraform@pve!provider=<token>"
+proxmox_username                 = "terraform"
+proxmox_ssh_private_key_location = "<path-to-private-ssh-key>"
 ```

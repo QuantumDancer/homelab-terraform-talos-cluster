@@ -14,8 +14,7 @@ variable "proxmox_username" {
   description = "Linux user to authenticate to Proxmox via SSH"
 }
 
-variable "proxmox_ssh_private_key" {
-  description = "Private SSH key for the user specified in proxmox_username"
+variable "proxmox_ssh_private_key_location" {
+  description = "Location of the private SSH key for the user specified in proxmox_username"
   type        = string
-  sensitive   = true
 }
