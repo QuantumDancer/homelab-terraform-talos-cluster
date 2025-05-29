@@ -1,5 +1,4 @@
 data "talos_cluster_health" "before_cilium" {
-  count                  = var.vm_state == "running" ? 1 : 0
   client_configuration   = talos_machine_secrets.this.client_configuration
   control_plane_nodes    = [for k, v in var.nodes : v.ip if v.machine_type == "controlplane"]
   worker_nodes           = [for k, v in var.nodes : v.ip if v.machine_type == "worker"]
@@ -81,7 +80,6 @@ resource "helm_release" "cilium" {
 }
 
 data "talos_cluster_health" "after_cilium" {
-  count                = var.vm_state == "running" ? 1 : 0
   client_configuration = talos_machine_secrets.this.client_configuration
   control_plane_nodes  = [for k, v in var.nodes : v.ip if v.machine_type == "controlplane"]
   worker_nodes         = [for k, v in var.nodes : v.ip if v.machine_type == "worker"]

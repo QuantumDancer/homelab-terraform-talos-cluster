@@ -46,7 +46,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
     cloudflare_dns_record.cluster_vip,
     cloudflare_dns_record.node
   ]
-  for_each = { for k, v in var.nodes : k => v if v.machine_type == "controlplane" && var.vm_state == "running" }
+  for_each = { for k, v in var.nodes : k => v if v.machine_type == "controlplane" }
 
   node                        = each.value.ip
   client_configuration        = talos_machine_secrets.this.client_configuration
@@ -68,10 +68,6 @@ resource "talos_machine_configuration_apply" "controlplane" {
   timeouts = {
     create = "1m"
   }
-
-  lifecycle {
-    replace_triggered_by = [proxmox_virtual_environment_vm.this[each.key]]
-  }
 }
 
 resource "talos_machine_configuration_apply" "worker" {
@@ -80,7 +76,7 @@ resource "talos_machine_configuration_apply" "worker" {
     cloudflare_dns_record.cluster_vip,
     cloudflare_dns_record.node
   ]
-  for_each = { for k, v in var.nodes : k => v if v.machine_type == "worker" && var.vm_state == "running" }
+  for_each = { for k, v in var.nodes : k => v if v.machine_type == "worker" }
 
   node                        = each.value.ip
   client_configuration        = talos_machine_secrets.this.client_configuration
@@ -98,21 +94,15 @@ resource "talos_machine_configuration_apply" "worker" {
       proxmox_node_name = each.value.proxmox_node_name
     })
   ]
-
-  lifecycle {
-    replace_triggered_by = [proxmox_virtual_environment_vm.this[each.key]]
-  }
 }
 
 resource "talos_machine_bootstrap" "this" {
-  count                = var.vm_state == "running" ? 1 : 0
   depends_on           = [talos_machine_configuration_apply.controlplane]
   client_configuration = talos_machine_secrets.this.client_configuration
   node                 = [for k, v in var.nodes : v.ip if v.machine_type == "controlplane"][0]
 }
 
 resource "talos_cluster_kubeconfig" "this" {
-  count                = var.vm_state == "running" ? 1 : 0
   depends_on           = [talos_machine_bootstrap.this]
   client_configuration = talos_machine_secrets.this.client_configuration
   node                 = [for k, v in var.nodes : v.ip if v.machine_type == "controlplane"][0]

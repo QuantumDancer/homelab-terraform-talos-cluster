@@ -76,14 +76,6 @@ apply_main:
   only:
     - main
 
-cleanup:
-  stage: cleanup
-  extends: .init_tf
-  when: manual
-  script:
-    - terraform apply -var="vm_state=stopped" -auto-approve
-  environment: prod
-
 destroy:
   stage: cleanup
   extends: .init_tf

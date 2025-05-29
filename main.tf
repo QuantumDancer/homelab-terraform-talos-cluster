@@ -47,7 +47,6 @@ module "talos" {
     proxmox_datastore_id = "local"
   }
 
-  vm_state = var.vm_state
 
   cloudflare_zone_id = var.cloudflare_zone_id
 }

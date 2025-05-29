@@ -50,11 +50,6 @@ variable "image" {
   })
 }
 
-variable "vm_state" {
-  description = "Desired state of the VMs ('running' or 'stopped')"
-  type        = string
-  default     = "running"
-}
 
 variable "cloudflare_zone_id" {
   type        = string
