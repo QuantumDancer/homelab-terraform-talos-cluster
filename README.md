@@ -49,11 +49,40 @@ cat ~/.ssh/id_ed25519 # Store on local machine
 
 ### Terraform Configuration
 
-Set the following variables, either via a `.tfvars` file or via environment variables (`TF_VAR_*`).
+#### Proxmox
+
+Set the following variables, either via a `*.auto.tfvars` file or via environment variables (`TF_VAR_*`).
 
 ```terraform
 proxmox_endpoint                 = "https://<proxmox-address>:8006"
 proxmox_api_token                = "terraform@pve!provider=<token>"
 proxmox_username                 = "terraform"
 proxmox_ssh_private_key_location = "<path-to-private-ssh-key>"
+```
+
+#### Cloudflare
+
+The `talos` module manages the DNS entries for the cluster VIP and for the individual cluster nodes.
+This is done via Cloudflare. Create a Cloudflare token that has edit permissions for your DNS zone and
+set up the following variables:
+
+```terraform
+cloudflare_api_token = "<cloudflare-api-token>"
+cloudflare_zone_id   = "<cloudflare-zone-id>"
+```
+
+## Initial cluster creation
+
+Run the following commands:
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+
+After successful deployment, retrieve the Talos and Kubernetes configuration:
+
+```bash
+source ./scripts/activate_configs.sh
 ```
