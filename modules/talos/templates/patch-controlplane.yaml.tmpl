@@ -1,6 +1,10 @@
 machine:
   install:
     disk: /dev/sda
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - ${node_ip}/24
   network:
     hostname: ${node_hostname}
     interfaces:
@@ -27,3 +31,7 @@ machine:
   time:
     servers:
       - ntp.metas.ch
+cluster:
+  etcd:
+    advertisedSubnets:
+      - ${node_ip}/24
