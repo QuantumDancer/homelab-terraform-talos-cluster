@@ -18,7 +18,10 @@ data "talos_machine_configuration" "controlplane" {
   kubernetes_version = var.cluster.kubernetes_version
   config_patches = [
     file("${path.module}/files/patch-controlplane-scheduling.yaml"),
-    file("${path.module}/files/patch-cilium.yaml")
+    templatefile("${path.module}/templates/patch-networking.yaml.tmpl", {
+      pod_cidr     = var.cluster.pod_cidr
+      service_cidr = var.cluster.service_cidr
+    })
   ]
 }
 
@@ -30,7 +33,10 @@ data "talos_machine_configuration" "worker" {
   talos_version      = var.cluster.talos_version
   kubernetes_version = var.cluster.kubernetes_version
   config_patches = [
-    file("${path.module}/files/patch-cilium.yaml")
+    templatefile("${path.module}/templates/patch-networking.yaml.tmpl", {
+      pod_cidr     = var.cluster.pod_cidr
+      service_cidr = var.cluster.service_cidr
+    })
   ]
 }
 

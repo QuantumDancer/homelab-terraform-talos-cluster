@@ -1,0 +1,11 @@
+# https://www.talos.dev/v1.10/kubernetes-guides/network/deploying-cilium/#machine-config-preparation
+cluster:
+  network:
+    cni:
+      name: none
+    podSubnets:
+      - ${pod_cidr}
+    serviceSubnets:
+      - ${service_cidr}
+  proxy:
+    disabled: true

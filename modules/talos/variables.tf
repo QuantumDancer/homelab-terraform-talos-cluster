@@ -23,16 +23,18 @@ variable "cluster" {
   type = object({
     name                            = string
     environment                     = string
-    proxmox_datastore_id_vm_disk    = string                 # Proxmox datastore ID for VM disks
-    proxmox_datastore_id_cloud_init = string                 # Proxmox datastore ID for cloud_init
-    dns_domain                      = optional(string)       # DNS search domain for VMs
-    dns_servers                     = optional(list(string)) # DNS servers for VMs
-    gateway                         = optional(string)       # IPv4 gateway for VMs
-    bridge                          = string                 # Network bridge for VMs
-    talos_version                   = string                 # Version of Talos Linux
-    kubernetes_version              = string                 # Version of Kubernetes
-    kubernetes_api_endpoint_url     = string                 # Endpoint of the Kubernetes API
-    kubernetes_api_vip              = string                 # VIP of the Kubernetes API
+    proxmox_datastore_id_vm_disk    = string                            # Proxmox datastore ID for VM disks
+    proxmox_datastore_id_cloud_init = string                            # Proxmox datastore ID for cloud_init
+    dns_domain                      = optional(string)                  # DNS search domain for VMs
+    dns_servers                     = optional(list(string))            # DNS servers for VMs
+    gateway                         = optional(string)                  # IPv4 gateway for VMs
+    bridge                          = string                            # Network bridge for VMs
+    talos_version                   = string                            # Version of Talos Linux
+    kubernetes_version              = string                            # Version of Kubernetes
+    kubernetes_api_endpoint_url     = string                            # Endpoint of the Kubernetes API
+    kubernetes_api_vip              = string                            # VIP of the Kubernetes API
+    pod_cidr                        = optional(string, "10.244.0.0/16") # Pod CIDR for Kubernetes cluster
+    service_cidr                    = optional(string, "10.96.0.0/12")  # Service CIDR for Kubernetes cluster
   })
 }
 
