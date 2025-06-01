@@ -1,3 +1,7 @@
+locals {
+  environment = "prod"
+}
+
 module "talos" {
   source = "./modules/talos/"
 
@@ -28,7 +32,7 @@ module "talos" {
 
   cluster = {
     name                            = "talos"
-    environment                     = "prod"
+    environment                     = local.environment
     proxmox_datastore_id_vm_disk    = "local-zfs"
     proxmox_datastore_id_cloud_init = "local-zfs"
     dns_domain                      = "home.rottlr.de"
@@ -49,4 +53,12 @@ module "talos" {
 
 
   cloudflare_zone_id = var.cloudflare_zone_id
+}
+
+module "flux_gitlab" {
+  source = "./modules/flux_gitlab/"
+
+  gitlab_group_path             = "homelab"
+  gitlab_cluster_config_project = "flux-cluster-config"
+  environment                   = local.environment
 }

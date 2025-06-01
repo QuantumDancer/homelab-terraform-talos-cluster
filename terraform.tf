@@ -21,5 +21,20 @@ terraform {
       source  = "hashicorp/helm"
       version = "2.17.0"
     }
+
+    flux = {
+      source  = "fluxcd/flux"
+      version = "1.6.0"
+    }
+
+    gitlab = {
+      source  = "gitlabhq/gitlab"
+      version = "18.0.0"
+    }
+
+    tls = {
+      source  = "hashicorp/tls"
+      version = "4.1.0"
+    }
   }
 }

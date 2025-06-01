@@ -1,3 +1,5 @@
+# Proxmox
+
 variable "proxmox_endpoint" {
   type        = string
   description = "Endpoint of the Proxmox node/cluster"
@@ -19,6 +21,7 @@ variable "proxmox_ssh_private_key_location" {
   type        = string
 }
 
+# Cloudflare
 
 variable "cloudflare_api_token" {
   type        = string
@@ -29,4 +32,17 @@ variable "cloudflare_api_token" {
 variable "cloudflare_zone_id" {
   type        = string
   description = "Cloudflare Zone ID"
+}
+
+# GitLab
+
+variable "gitlab_token" {
+  description = "The GitLab token to use for authenticating against the GitLab API"
+  sensitive   = true
+  type        = string
+}
+
+variable "gitlab_url" {
+  description = "The base URL for the GitLab intance to use."
+  type        = string
 }
