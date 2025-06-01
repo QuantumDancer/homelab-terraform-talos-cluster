@@ -27,6 +27,7 @@ resource "helm_release" "cilium" {
   version    = "1.17.4"
   namespace  = "kube-system"
 
+  # Talos specific settings (with KubeProxy replacement)
 
   set {
     name  = "kubeProxyReplacement"
@@ -63,6 +64,8 @@ resource "helm_release" "cilium" {
     value = "7445"
   }
 
+  # Gateway API
+
   set {
     name  = "gatewayAPI.enabled"
     value = "true"
@@ -76,6 +79,24 @@ resource "helm_release" "cilium" {
   set {
     name  = "gatewayAPI.enableAppProtocol"
     value = "true"
+  }
+
+  # Automatic rollouts when configmap is updated
+
+  set {
+    name  = "rollOutCiliumPods"
+    value = "true"
+  }
+
+  set {
+    name  = "operator.rollOutPods"
+    value = "true"
+  }
+
+  # https://docs.cilium.io/en/stable/network/bgp-control-plane/bgp-control-plane/
+  set {
+    name  = "bgpControlPlane.enabled"
+    value = true
   }
 }
 
