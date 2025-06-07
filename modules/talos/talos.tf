@@ -21,6 +21,14 @@ data "talos_machine_configuration" "controlplane" {
     templatefile("${path.module}/templates/patch-networking.yaml.tmpl", {
       pod_cidr     = var.cluster.pod_cidr
       service_cidr = var.cluster.service_cidr
+    }),
+    yamlencode({
+      cluster = {
+        extraManifests = [
+          "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v0.9.2/deploy/standalone-install.yaml",
+          "https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.7.2/components.yaml"
+        ]
+      }
     })
   ]
 }

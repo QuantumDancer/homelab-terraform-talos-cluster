@@ -5,6 +5,8 @@ machine:
     nodeIP:
       validSubnets:
         - ${node_ip}/24
+    extraArgs:
+      rotate-server-certificates: true
   network:
     hostname: ${node_hostname}
     interfaces:
