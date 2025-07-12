@@ -42,7 +42,7 @@ format:
 lint:
   stage: test
   image:
-    name: ghcr.io/terraform-linters/tflint:v0.58.0
+    name: ghcr.io/terraform-linters/tflint:v0.58.1
     entrypoint: [""]
   script:
     - tflint --init
