@@ -99,3 +99,10 @@ source ./scripts/activate_configs.sh
    Run `terraform apply` again.
 4. **Updates need to be performed sequentially!**
    For each node, remote the `update` flag or set it to false and then run `terraform apply`.
+
+### Upgrading Kubernetes
+
+Kubernetes versions will be automatically increased by Renovate Bot. Steps for upgrading Kubernetes:
+
+1. Run `./scripts/update-k8s.sh` to upgrade Kubernetes in a safe way using the Talos API.
+2. Run `terraform apply` to update the machine config in the Terraform state.

@@ -3,6 +3,18 @@
   "extends": [
     "config:recommended"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.tf$/",
+        "/\\.sh$/"
+      ],
+      "matchStrings": [
+        "(?<currentValue>[\\w+\\.\\-]*)['\",;]*\\s*#\\s?renovate: (?<datasource>\\S+)=(?<depName>\\S+)\\s?(registry=(?<registryUrl>\\S+))?\\s?(versioning=(?<versioning>\\S+))?"
+      ]
+    }
+  ],
   "assignees": [
     "benjamin"
   ]
