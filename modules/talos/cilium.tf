@@ -29,89 +29,74 @@ resource "helm_release" "cilium" {
 
   # Talos specific settings (with KubeProxy replacement)
 
-  set {
-    name  = "kubeProxyReplacement"
-    value = "true"
-  }
-
-  set {
-    name  = "securityContext.capabilities.ciliumAgent"
-    value = "{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}"
-  }
-
-  set {
-    name  = "securityContext.capabilities.cleanCiliumState"
-    value = "{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}"
-  }
-
-  set {
-    name  = "cgroup.autoMount.enabled"
-    value = "false"
-  }
-
-  set {
-    name  = "cgroup.hostRoot"
-    value = "/sys/fs/cgroup"
-  }
-
-  set {
-    name  = "k8sServiceHost"
-    value = "localhost"
-  }
-
-  set {
-    name  = "k8sServicePort"
-    value = "7445"
-  }
-
-  # Gateway API
-
-  set {
-    name  = "gatewayAPI.enabled"
-    value = "true"
-  }
-
-  set {
-    name  = "gatewayAPI.enableAlpn"
-    value = "true"
-  }
-
-  set {
-    name  = "gatewayAPI.enableAppProtocol"
-    value = "true"
-  }
-
-  # Automatic rollouts when configmap is updated
-
-  set {
-    name  = "rollOutCiliumPods"
-    value = "true"
-  }
-
-  set {
-    name  = "operator.rollOutPods"
-    value = "true"
-  }
-
-  # https://docs.cilium.io/en/stable/network/bgp-control-plane/bgp-control-plane/
-  set {
-    name  = "bgpControlPlane.enabled"
-    value = true
-  }
-
-  # Hubble
-  # https://docs.cilium.io/en/stable/observability/hubble/setup/#hubble-setup
-  # https://docs.cilium.io/en/stable/observability/hubble/hubble-ui/#hubble-ui
-
-  set {
-    name  = "hubble.relay.enabled"
-    value = true
-  }
-
-  set {
-    name  = "hubble.ui.enabled"
-    value = true
-  }
+  set = [
+    {
+      name  = "kubeProxyReplacement"
+      value = "true"
+    },
+    {
+      name  = "securityContext.capabilities.ciliumAgent"
+      value = "{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,,GID,SETUID}"
+    },
+    {
+      name  = "securityContext.capabilities.cleanCiliumState"
+      value = "{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}"
+    },
+    {
+      name  = "cgroup.autoMount.enabled"
+      value = "false"
+    },
+    {
+      name  = "cgroup.hostRoot"
+      value = "/sys/fs/cgroup"
+    },
+    {
+      name  = "k8sServiceHost"
+      value = "localhost"
+    },
+    {
+      name  = "k8sServicePort"
+      value = "7445"
+    },
+    # Gateway API
+    {
+      name  = "gatewayAPI.enabled"
+      value = "true"
+    },
+    {
+      name  = "gatewayAPI.enableAlpn"
+      value = "true"
+    },
+    {
+      name  = "gatewayAPI.enableAppProtocol"
+      value = "true"
+    },
+    # Automatic rollouts when configmap is updated
+    {
+      name  = "rollOutCiliumPods"
+      value = "true"
+    },
+    {
+      name  = "operator.rollOutPods"
+      value = "true"
+    },
+    # https://docs.cilium.io/en/stable/network/bgp-control-plane/bgp-control-plane/
+    {
+      name  = "bgpControlPlane.enabled"
+      value = true
+    },
+    # Hubble
+    # https://docs.cilium.io/en/stable/observability/hubble/,up/#hubble-setup
+    # https://docs.cilium.io/en/stable/observability/hubble/hubble-ui/#hubble-ui
+    {
+      name  = "hubble.relay.enabled"
+      value = true
+    },
+    {
+      name  = "hubble.ui.enabled"
+      value = true
+    }
+  ]
 
 }
 
