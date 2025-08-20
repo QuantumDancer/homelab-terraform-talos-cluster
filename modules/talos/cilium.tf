@@ -98,6 +98,21 @@ resource "helm_release" "cilium" {
     name  = "bgpControlPlane.enabled"
     value = true
   }
+
+  # Hubble
+  # https://docs.cilium.io/en/stable/observability/hubble/setup/#hubble-setup
+  # https://docs.cilium.io/en/stable/observability/hubble/hubble-ui/#hubble-ui
+
+  set {
+    name  = "hubble.relay.enabled"
+    value = true
+  }
+
+  set {
+    name  = "hubble.ui.enabled"
+    value = true
+  }
+
 }
 
 data "talos_cluster_health" "after_cilium" {
