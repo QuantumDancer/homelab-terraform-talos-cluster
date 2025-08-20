@@ -14,7 +14,7 @@ terraform {
 
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "5.8.2"
+      version = "5.8.4"
     }
 
     helm = {
