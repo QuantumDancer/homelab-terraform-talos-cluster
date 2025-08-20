@@ -25,7 +25,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   disk {
     datastore_id = var.cluster.proxmox_datastore_id_vm_disk
-    file_id      = proxmox_virtual_environment_download_file.this.id
+    file_id      = each.value.update ? proxmox_virtual_environment_download_file.update[0].id : proxmox_virtual_environment_download_file.this.id
     interface    = "scsi0"
     iothread     = true
     discard      = "on"

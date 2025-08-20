@@ -86,3 +86,16 @@ After successful deployment, retrieve the Talos and Kubernetes configuration:
 ```bash
 source ./scripts/activate_configs.sh
 ```
+
+## Maintenance
+
+### Upgrading Talos
+
+1. Set the new Talos version in `cluster.talos_update_version` in the `talos` module call in `main.tf`.
+2. **Updates need to be performed sequentially!**
+   For each node, set `update` to true and then run `terraform apply`, before changing `update` for the next node.
+   Wait until the node has fully rebooted and is operational again (`talosctl -n <node-ip> dashboard`).
+3. Set the `cluster.talos_version` option to the same value as `cluster.talos_update_version`.
+   Run `terraform apply` again.
+4. **Updates need to be performed sequentially!**
+   For each node, remote the `update` flag or set it to false and then run `terraform apply`.

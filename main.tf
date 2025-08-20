@@ -40,13 +40,13 @@ module "talos" {
     gateway                         = "192.168.30.1"
     bridge                          = "vmbr1"
     talos_version                   = "1.10.2"
+    talos_update_version            = "1.10.3"
     kubernetes_version              = "1.33.1"
     kubernetes_api_endpoint_url     = "talos-prod.home.rottlr.de"
     kubernetes_api_vip              = "192.168.30.50"
   }
 
   image = {
-    version              = "1.10.2"
     proxmox_node_name    = "proxmox-01"
     proxmox_datastore_id = "local"
   }

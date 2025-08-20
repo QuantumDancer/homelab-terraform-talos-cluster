@@ -8,6 +8,7 @@ variable "nodes" {
     memory            = optional(number, 4096) # Amount of memory in MB
     main_disk_size    = optional(number, 50)   # Size of the main disk in GB where Talos Linux is installed
     ip                = string                 # IP Address of the VM
+    update            = optional(bool, false)  # Set to true to update this node to the new Talos version specified in image.update_version
   }))
 
   validation {
@@ -30,6 +31,7 @@ variable "cluster" {
     gateway                         = optional(string)                  # IPv4 gateway for VMs
     bridge                          = string                            # Network bridge for VMs
     talos_version                   = string                            # Version of Talos Linux
+    talos_update_version            = optional(string)                  # Version of Talos Linux when updating Talos Linux
     kubernetes_version              = string                            # Version of Kubernetes
     kubernetes_api_endpoint_url     = string                            # Endpoint of the Kubernetes API
     kubernetes_api_vip              = string                            # VIP of the Kubernetes API
@@ -41,7 +43,6 @@ variable "cluster" {
 variable "image" {
   description = "Configuration for the Talos image"
   type = object({
-    version              = string                                        # Version of the Talos image
     factory_url          = optional(string, "https://factory.talos.dev") # Talos Linux Image Factory URL
     arch                 = optional(string, "amd64")                     # Image architecture
     platform             = optional(string, "nocloud")                   # Image platform

@@ -76,6 +76,12 @@ resource "talos_machine_configuration_apply" "controlplane" {
   timeouts = {
     create = "1m"
   }
+
+  lifecycle {
+    replace_triggered_by = [
+      proxmox_virtual_environment_vm.this[each.key]
+    ]
+  }
 }
 
 resource "talos_machine_configuration_apply" "worker" {
@@ -102,6 +108,16 @@ resource "talos_machine_configuration_apply" "worker" {
       proxmox_node_name = each.value.proxmox_node_name
     })
   ]
+
+  timeouts = {
+    create = "1m"
+  }
+
+  lifecycle {
+    replace_triggered_by = [
+      proxmox_virtual_environment_vm.this[each.key]
+    ]
+  }
 }
 
 resource "talos_machine_bootstrap" "this" {
