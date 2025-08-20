@@ -21,6 +21,7 @@ module "talos" {
       proxmox_node_name = "proxmox-01"
       vm_id             = 352
       ip                = "192.168.30.52"
+      update            = true
     }
     "talos3" = {
       machine_type      = "controlplane"
