@@ -14,6 +14,7 @@ module "talos" {
       proxmox_node_name = "proxmox-01"
       vm_id             = 351
       ip                = "192.168.30.51"
+      memory            = 8192
       update            = false
     }
     "talos2" = {
@@ -21,6 +22,7 @@ module "talos" {
       proxmox_node_name = "proxmox-01"
       vm_id             = 352
       ip                = "192.168.30.52"
+      memory            = 8192
       update            = false
     }
     "talos3" = {
@@ -28,6 +30,7 @@ module "talos" {
       proxmox_node_name = "proxmox-01"
       vm_id             = 353
       ip                = "192.168.30.53"
+      memory            = 8192
       update            = false
     }
 
