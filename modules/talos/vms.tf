@@ -35,6 +35,19 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
   boot_order = ["scsi0"]
 
+  dynamic "disk" {
+    for_each = each.value.additional_disks != null ? each.value.additional_disks : {}
+    content {
+      datastore_id = disk.value.datastore_id
+      interface    = "scsi${disk.value.scsi_id}"
+      iothread     = true
+      discard      = "on"
+      ssd          = true
+      file_format  = "raw"
+      size         = disk.value.size
+    }
+  }
+
   network_device {
     bridge = var.cluster.bridge
   }

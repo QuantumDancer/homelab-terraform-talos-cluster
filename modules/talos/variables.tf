@@ -7,8 +7,13 @@ variable "nodes" {
     cpu               = optional(number, 4)    # Number of CPU cores
     memory            = optional(number, 4096) # Amount of memory in MB
     main_disk_size    = optional(number, 50)   # Size of the main disk in GB where Talos Linux is installed
-    ip                = string                 # IP Address of the VM
-    update            = optional(bool, false)  # Set to true to update this node to the new Talos version specified in image.update_version
+    additional_disks = optional(map(object({   # Additional disk configuration
+      datastore_id = string                    #   Datastore ID of the additional disk 
+      scsi_id      = number                    #   SCSI ID of the additional disk. Start at 1, the main disk has index 0.
+      size         = number                    #   Size of the additional disk in GB
+    })))
+    ip     = string                # IP Address of the VM
+    update = optional(bool, false) # Set to true to update this node to the new Talos version specified in image.update_version
   }))
 
   validation {

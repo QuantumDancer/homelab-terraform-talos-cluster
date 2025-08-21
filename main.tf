@@ -15,7 +15,14 @@ module "talos" {
       vm_id             = 351
       ip                = "192.168.30.51"
       memory            = 8192
-      update            = false
+      additional_disks = {
+        "longhorn" = {
+          datastore_id = "longhorn"
+          size         = 100
+          scsi_id      = 1
+        }
+      }
+      update = false
     }
     "talos2" = {
       machine_type      = "controlplane"
@@ -23,7 +30,14 @@ module "talos" {
       vm_id             = 352
       ip                = "192.168.30.52"
       memory            = 8192
-      update            = false
+      additional_disks = {
+        "longhorn" = {
+          datastore_id = "longhorn"
+          size         = 100
+          scsi_id      = 1
+        }
+      }
+      update = false
     }
     "talos3" = {
       machine_type      = "controlplane"
@@ -31,7 +45,14 @@ module "talos" {
       vm_id             = 353
       ip                = "192.168.30.53"
       memory            = 8192
-      update            = false
+      additional_disks = {
+        "longhorn" = {
+          datastore_id = "longhorn"
+          size         = 100
+          scsi_id      = 1
+        }
+      }
+      update = false
     }
 
   }

@@ -29,7 +29,9 @@ data "talos_machine_configuration" "controlplane" {
           "https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.7.2/components.yaml"
         ]
       }
-    })
+    }),
+    file("${path.module}/files/patch-longhorn-uservolumeconfig.yaml"),
+    file("${path.module}/files/patch-longhorn-machineconfig.yaml")
   ]
 }
 
@@ -44,7 +46,9 @@ data "talos_machine_configuration" "worker" {
     templatefile("${path.module}/templates/patch-networking.yaml.tmpl", {
       pod_cidr     = var.cluster.pod_cidr
       service_cidr = var.cluster.service_cidr
-    })
+    }),
+    file("${path.module}/files/patch-longhorn-uservolumeconfig.yaml"),
+    file("${path.module}/files/patch-longhorn-machineconfig.yaml")
   ]
 }
 

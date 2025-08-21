@@ -6,7 +6,7 @@ resource "talos_image_factory_schematic" "this" {
 resource "talos_image_factory_schematic" "update" {
   count = local.update_required ? 1 : 0
 
-  schematic = file("${path.module}/files/image-schematic.yaml")
+  schematic = file("${path.module}/files/image-schematic-update.yaml")
 }
 
 resource "proxmox_virtual_environment_download_file" "this" {
