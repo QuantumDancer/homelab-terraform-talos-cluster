@@ -67,7 +67,7 @@ module "talos" {
     gateway                         = "192.168.30.1"
     bridge                          = "vmbr1"
     talos_version                   = "1.11.0"
-    talos_update_version            = "1.11.0" # renovate: github-releases=siderolabs/talos
+    talos_update_version            = "1.11.5" # renovate: github-releases=siderolabs/talos
     kubernetes_version              = "1.33.4" # renovate: github-releases=kubernetes/kubernetes
     kubernetes_api_endpoint_url     = "talos-prod.home.rottlr.de"
     kubernetes_api_vip              = "192.168.30.50"
