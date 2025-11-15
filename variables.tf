@@ -47,6 +47,13 @@ variable "gitlab_url" {
   type        = string
 }
 
+variable "gitlab_ssh_port" {
+  description = "The port used by SSH to clone from GitLab"
+  type        = number
+  default     = 22
+}
+
+
 variable "gitlab_known_hosts" {
   description = "SSH known hosts for GitLab instance (obtain via ssh-keyscan)"
   type        = string

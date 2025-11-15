@@ -34,7 +34,7 @@ provider "flux" {
     cluster_ca_certificate = base64decode(yamldecode(module.talos.kube_config).clusters[0].cluster.certificate-authority-data)
   }
   git = {
-    url = "ssh://git@${var.gitlab_url}/${module.flux_gitlab.gitlab_cluster_config_project_path_with_namespace}.git"
+    url = "ssh://git@${var.gitlab_url}:${var.gitlab_ssh_port}/${module.flux_gitlab.gitlab_cluster_config_project_path_with_namespace}.git"
     ssh = {
       username    = "git"
       private_key = module.flux_gitlab.private_key_pem
