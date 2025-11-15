@@ -38,6 +38,7 @@ provider "flux" {
     ssh = {
       username    = "git"
       private_key = module.flux_gitlab.private_key_pem
+      known_hosts = var.gitlab_known_hosts
     }
   }
 }

@@ -46,3 +46,9 @@ variable "gitlab_url" {
   description = "The base URL for the GitLab intance to use."
   type        = string
 }
+
+variable "gitlab_known_hosts" {
+  description = "SSH known hosts for GitLab instance (obtain via ssh-keyscan)"
+  type        = string
+  sensitive   = false
+}
