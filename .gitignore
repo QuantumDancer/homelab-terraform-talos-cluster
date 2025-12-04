@@ -2,6 +2,8 @@
 # Custom
 ###
 .env
+kubeconfig
+talosconfig
 
 ###
 # Based on https://github.com/github/gitignore/blob/main/Terraform.gitignore
