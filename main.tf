@@ -22,7 +22,7 @@ module "talos" {
           scsi_id      = 1
         }
       }
-      update = true
+      update = false
     }
     "talos2" = {
       machine_type      = "controlplane"
@@ -66,7 +66,7 @@ module "talos" {
     dns_servers                     = ["1.1.1.1", "1.0.0.1"]
     gateway                         = "192.168.30.1"
     bridge                          = "vmbr1"
-    talos_version                   = "1.11.0"
+    talos_version                   = "1.11.5"
     talos_update_version            = "1.11.5" # renovate: github-releases=siderolabs/talos
     kubernetes_version              = "1.33.4" # renovate: github-releases=kubernetes/kubernetes
     kubernetes_api_endpoint_url     = "talos-prod.home.rottlr.de"
