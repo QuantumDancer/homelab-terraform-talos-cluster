@@ -37,7 +37,7 @@ module "talos" {
           scsi_id      = 1
         }
       }
-      update = false
+      update = true
     }
     "talos3" = {
       machine_type      = "controlplane"
