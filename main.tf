@@ -52,7 +52,7 @@ module "talos" {
           scsi_id      = 1
         }
       }
-      update = false
+      update = true
     }
 
   }
