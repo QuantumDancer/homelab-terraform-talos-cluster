@@ -25,7 +25,7 @@ data "talos_machine_configuration" "controlplane" {
     yamlencode({
       cluster = {
         extraManifests = [
-          "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v0.9.2/deploy/standalone-install.yaml",
+          "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v0.10.0/deploy/ha-install.yaml",
           "https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.7.2/components.yaml"
         ]
       }
