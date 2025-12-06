@@ -45,6 +45,7 @@ chmod 700 ~/.ssh
 cp ~/.ssh/id_ed25519.pub ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 cat ~/.ssh/id_ed25519 # Store on local machine
+rm ~/.ssh/id_ed25519 # Remove private key from Proxmox
 ```
 
 ### Terraform Configuration
