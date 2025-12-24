@@ -7,7 +7,7 @@ resource "helm_release" "argocd" {
   name             = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"
   chart            = "argo-cd"
-  version          = "9.1.0" # renovate: github-releases=argoproj/argo-cd
+  version          = "9.2.0" # renovate: github-releases=argoproj/argo-cd
   namespace        = local.namespace
   create_namespace = true
 
