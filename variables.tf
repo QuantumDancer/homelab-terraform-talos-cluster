@@ -34,32 +34,6 @@ variable "cloudflare_zone_id" {
   description = "Cloudflare Zone ID"
 }
 
-# GitLab
-
-variable "gitlab_token" {
-  description = "The GitLab token to use for authenticating against the GitLab API"
-  sensitive   = true
-  type        = string
-}
-
-variable "gitlab_url" {
-  description = "The base URL for the GitLab intance to use."
-  type        = string
-}
-
-variable "gitlab_ssh_port" {
-  description = "The port used by SSH to clone from GitLab"
-  type        = number
-  default     = 22
-}
-
-
-variable "gitlab_known_hosts" {
-  description = "SSH known hosts for GitLab instance (obtain via ssh-keyscan)"
-  type        = string
-  sensitive   = false
-}
-
 # ArgoCD
 
 variable "argocd_url" {

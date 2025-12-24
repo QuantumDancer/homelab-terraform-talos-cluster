@@ -31,21 +31,5 @@ terraform {
       source  = "hashicorp/null"
       version = "3.2.4"
     }
-
-    # To be removed
-    flux = {
-      source  = "fluxcd/flux"
-      version = "1.7.4"
-    }
-
-    gitlab = {
-      source  = "gitlabhq/gitlab"
-      version = "18.6.1"
-    }
-
-    tls = {
-      source  = "hashicorp/tls"
-      version = "4.1.0"
-    }
   }
 }
