@@ -18,22 +18,10 @@ resource "helm_release" "argocd" {
   ]
 }
 
-resource "null_resource" "wait_for_argocd" {
-  depends_on = [helm_release.argocd]
-
-  provisioner "local-exec" {
-    command = "kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-server -n argocd --timeout=300s"
-  }
-
-  triggers = {
-    argocd_chart_version = helm_release.argocd.version
-  }
-}
-
 resource "kubernetes_secret_v1" "repo_credentials" {
   count = var.repo_password != null ? 1 : 0
 
-  depends_on = [null_resource.wait_for_argocd]
+  depends_on = [helm_release.argocd]
 
   metadata {
     name      = "git-repo-credentials"
@@ -53,7 +41,7 @@ resource "kubernetes_secret_v1" "repo_credentials" {
 
 resource "kubernetes_manifest" "root_app" {
   depends_on = [
-    null_resource.wait_for_argocd,
+    helm_release.argocd,
     kubernetes_secret_v1.repo_credentials
   ]
 
