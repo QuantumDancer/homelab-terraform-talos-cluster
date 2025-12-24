@@ -9,14 +9,16 @@ variable "repo_url" {
 }
 
 variable "repo_username" {
-  description = "Username for Git repository authentication"
+  description = "Username for Git repository authentication. Optional for public repositories."
   type        = string
+  default     = null
 }
 
 variable "repo_password" {
-  description = "Password/token for Git repository authentication"
+  description = "Password/token for Git repository authentication. Optional for public repositories."
   type        = string
   sensitive   = true
+  default     = null
 }
 
 variable "root_app_path" {

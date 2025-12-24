@@ -49,13 +49,14 @@ variable "argocd_repo_url" {
 }
 
 variable "argocd_repo_username" {
-  description = "Username for ArgoCD Git repository authentication"
+  description = "Username for ArgoCD Git repository authentication. Optional for public repositories."
   type        = string
-  default     = "argocd-homelab"
+  default     = null
 }
 
 variable "argocd_repo_password" {
-  description = "Password/token for ArgoCD Git repository authentication"
+  description = "Password/token for ArgoCD Git repository authentication. Optional for public repositories."
   type        = string
   sensitive   = true
+  default     = null
 }

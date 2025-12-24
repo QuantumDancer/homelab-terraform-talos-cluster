@@ -72,6 +72,30 @@ cloudflare_api_token = "<cloudflare-api-token>"
 cloudflare_zone_id   = "<cloudflare-zone-id>"
 ```
 
+#### ArgoCD
+
+The `argocd` module bootstraps ArgoCD and the root app of the App-of-Apps pattern.
+ArgoCD needs access to the GitOps repo that provides the configuration for the root application.
+
+**For private repositories**:
+
+Per default, the GitOps repo is pulled from my private GitLab instance.
+Authentication needs to be configured like this:
+
+```terraform
+argocd_repo_username = "<username>"
+argocd_repo_password = "<password-or-token>"
+```
+
+**For public repositories**
+
+To use the public mirror GitHub, overwrite the repo url.
+Since this is public, no credentials need to be provided.
+
+```terraform
+argocd_repo_url = "https://github.com/QuantumDancer/idp-argocd-platform-apps.git"
+```
+
 ## Initial cluster creation
 
 Run the following commands:

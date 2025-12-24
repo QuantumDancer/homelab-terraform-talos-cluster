@@ -31,10 +31,12 @@ resource "null_resource" "wait_for_argocd" {
 }
 
 resource "kubernetes_secret_v1" "repo_credentials" {
+  count = var.repo_password != null ? 1 : 0
+
   depends_on = [null_resource.wait_for_argocd]
 
   metadata {
-    name      = "gitlab-repo-credentials"
+    name      = "git-repo-credentials"
     namespace = local.namespace
     labels = {
       "argocd.argoproj.io/secret-type" = "repository"
@@ -50,7 +52,10 @@ resource "kubernetes_secret_v1" "repo_credentials" {
 }
 
 resource "kubernetes_manifest" "root_app" {
-  depends_on = [kubernetes_secret_v1.repo_credentials]
+  depends_on = [
+    null_resource.wait_for_argocd,
+    kubernetes_secret_v1.repo_credentials
+  ]
 
   manifest = {
     apiVersion = "argoproj.io/v1alpha1"
