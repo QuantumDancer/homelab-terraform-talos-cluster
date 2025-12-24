@@ -82,14 +82,6 @@ module "talos" {
   cloudflare_zone_id = var.cloudflare_zone_id
 }
 
-module "flux_gitlab" {
-  source = "./modules/flux_gitlab/"
-
-  gitlab_group_path             = "homelab"
-  gitlab_cluster_config_project = "flux-cluster-config"
-  environment                   = local.environment
-}
-
 module "argocd" {
   source = "./modules/argocd/"
 
