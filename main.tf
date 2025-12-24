@@ -89,3 +89,16 @@ module "flux_gitlab" {
   gitlab_cluster_config_project = "flux-cluster-config"
   environment                   = local.environment
 }
+
+module "argocd" {
+  source = "./modules/argocd/"
+
+  argocd_url               = var.argocd_url
+  repo_url                 = var.argocd_repo_url
+  repo_username            = var.argocd_repo_username
+  repo_password            = var.argocd_repo_password
+  root_app_path            = "apps"
+  root_app_target_revision = "main"
+
+  depends_on = [module.talos]
+}

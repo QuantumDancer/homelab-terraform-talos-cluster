@@ -24,9 +24,9 @@ resource "gitlab_deploy_key" "this" {
   can_push = true
 }
 
-resource "flux_bootstrap_git" "this" {
-  depends_on = [gitlab_deploy_key.this]
-
-  embedded_manifests = true
-  path               = "clusters/${var.environment}"
-}
+# resource "flux_bootstrap_git" "this" {
+#   depends_on = [gitlab_deploy_key.this]
+#
+#   embedded_manifests = true
+#   path               = "clusters/${var.environment}"
+# }

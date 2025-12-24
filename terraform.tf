@@ -22,6 +22,17 @@ terraform {
       version = "3.1.1"
     }
 
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "3.0.1"
+    }
+
+    null = {
+      source  = "hashicorp/null"
+      version = "3.2.4"
+    }
+
+    # To be removed
     flux = {
       source  = "fluxcd/flux"
       version = "1.7.4"

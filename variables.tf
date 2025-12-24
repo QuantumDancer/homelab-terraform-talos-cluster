@@ -59,3 +59,29 @@ variable "gitlab_known_hosts" {
   type        = string
   sensitive   = false
 }
+
+# ArgoCD
+
+variable "argocd_url" {
+  description = "Public URL where ArgoCD will be accessible"
+  type        = string
+  default     = "https://argocd.k8s.home.rottlr.de"
+}
+
+variable "argocd_repo_url" {
+  description = "Git repository URL for ArgoCD applications"
+  type        = string
+  default     = "https://gitlab.home.rottlr.de/idp/platform/idp-argocd-platform-apps.git"
+}
+
+variable "argocd_repo_username" {
+  description = "Username for ArgoCD Git repository authentication"
+  type        = string
+  default     = "argocd-homelab"
+}
+
+variable "argocd_repo_password" {
+  description = "Password/token for ArgoCD Git repository authentication"
+  type        = string
+  sensitive   = true
+}

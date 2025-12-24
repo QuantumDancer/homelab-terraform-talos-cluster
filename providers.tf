@@ -21,6 +21,13 @@ provider "helm" {
   }
 }
 
+provider "kubernetes" {
+  host                   = yamldecode(module.talos.kube_config).clusters[0].cluster.server
+  client_certificate     = base64decode(yamldecode(module.talos.kube_config).users[0].user.client-certificate-data)
+  client_key             = base64decode(yamldecode(module.talos.kube_config).users[0].user.client-key-data)
+  cluster_ca_certificate = base64decode(yamldecode(module.talos.kube_config).clusters[0].cluster.certificate-authority-data)
+}
+
 provider "gitlab" {
   token    = var.gitlab_token
   base_url = "https://${var.gitlab_url}/api/v4/"
