@@ -24,7 +24,7 @@ resource "helm_release" "cilium" {
   name       = "cilium"
   repository = "https://helm.cilium.io/"
   chart      = "cilium"
-  version    = "1.18.4" # renovate: github-releases=cilium/cilium
+  version    = "1.18.5" # renovate: github-releases=cilium/cilium
   namespace  = "kube-system"
 
   # Talos specific settings (with KubeProxy replacement)
