@@ -69,6 +69,14 @@ resource "kubernetes_manifest" "root_app" {
             {
               name  = "longhorn.enabled"
               value = "true"
+            },
+            {
+              name  = "networkingConfig.enabled"
+              value = "true"
+            },
+            {
+              name  = "gatewayApiCrds.enabled"
+              value = "true"
             }
           ]
         }
