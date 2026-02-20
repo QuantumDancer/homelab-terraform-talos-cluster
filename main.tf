@@ -90,7 +90,7 @@ module "argocd" {
   repo_username            = var.argocd_repo_username
   repo_password            = var.argocd_repo_password
   root_app_path            = "apps"
-  root_app_target_revision = "main"
+  root_app_target_revision = "development"
 
   depends_on = [module.talos]
 }
