@@ -10,7 +10,7 @@ include:
 
 default:
   image:
-    name: hashicorp/terraform:1.14.3
+    name: hashicorp/terraform:1.14.5
     entrypoint: [""]
 
 variables:
