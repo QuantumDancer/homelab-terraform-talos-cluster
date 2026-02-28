@@ -8,7 +8,6 @@ machine:
     extraArgs:
       rotate-server-certificates: true
   network:
-    hostname: ${node_hostname}
     interfaces:
       - interface: eth0
         dhcp: false
@@ -31,3 +30,10 @@ machine:
   time:
     servers:
       - ntp.metas.ch
+---
+# Talos v1.12+ requires hostname to be set via HostnameConfig rather than
+# machine.network.hostname to avoid conflict with the auto: stable default.
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: ${node_hostname}
