@@ -2,18 +2,48 @@ locals {
   namespace = "argocd"
 }
 
+resource "kubernetes_namespace_v1" "argocd" {
+  metadata {
+    name = local.namespace
+  }
+}
+
+resource "kubernetes_secret_v1" "oidc_gitlab" {
+  depends_on = [kubernetes_namespace_v1.argocd]
+
+  metadata {
+    name      = "argocd-oidc-gitlab"
+    namespace = local.namespace
+    labels = {
+      # ArgoCD watches secrets with this label for config reload
+      "app.kubernetes.io/part-of" = "argocd"
+    }
+  }
+
+  data = {
+    clientSecret = var.oidc_client_secret
+  }
+}
+
 resource "helm_release" "argocd" {
-  upgrade_install  = true
-  name             = "argocd"
-  repository       = "https://argoproj.github.io/argo-helm"
-  chart            = "argo-cd"
-  version          = "9.4.3" # renovate: github-releases=argoproj/argo-cd
-  namespace        = local.namespace
-  create_namespace = true
+  # OIDC secret must exist before ArgoCD starts so the reference is resolved on first boot
+  depends_on = [kubernetes_secret_v1.oidc_gitlab]
+
+  upgrade_install = true
+  name            = "argocd"
+  repository      = "https://argoproj.github.io/argo-helm"
+  chart           = "argo-cd"
+  version         = "9.4.3" # renovate: github-releases=argoproj/argo-cd
+  namespace       = local.namespace
+  # Namespace is managed by kubernetes_namespace_v1.argocd
+  create_namespace = false
 
   values = [
     templatefile("${path.module}/files/argocd-values.yaml.tftpl", {
-      argocd_url = var.argocd_url
+      argocd_url       = var.argocd_url
+      gitlab_url       = var.gitlab_url
+      oidc_client_id   = var.oidc_client_id
+      sso_admin_groups = var.sso_admin_groups
     })
   ]
 }
@@ -21,7 +51,7 @@ resource "helm_release" "argocd" {
 resource "kubernetes_secret_v1" "repo_credentials" {
   count = var.repo_password != null ? 1 : 0
 
-  depends_on = [helm_release.argocd]
+  depends_on = [kubernetes_namespace_v1.argocd]
 
   metadata {
     name      = "git-repo-credentials"

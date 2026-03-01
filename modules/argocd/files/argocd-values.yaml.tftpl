@@ -1,3 +1,7 @@
+dex:
+  # Direct OIDC to GitLab is used instead; Dex adds unnecessary complexity
+  enabled: false
+
 redis-ha:
   enabled: true
 
@@ -29,6 +33,19 @@ configs:
     server.insecure: true
   cm:
     url: ${argocd_url}
+    # https://argo-cd.readthedocs.io/en/stable/faq/#how-to-disable-admin-user
+    admin.enabled: "false"
+    # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#existing-oidc-provider
+    oidc.config: |
+      name: GitLab
+      issuer: ${gitlab_url}
+      clientID: ${oidc_client_id}
+      # References key 'clientSecret' from Kubernetes secret 'argocd-oidc-gitlab'
+      clientSecret: $argocd-oidc-gitlab:clientSecret
+      requestedScopes:
+        - openid
+        - profile
+        - email
     # Crossplane configuration: https://docs.crossplane.io/latest/guides/crossplane-with-argo-cd/
     application.resourceTrackingMethod: annotation
     resource.customizations: |
@@ -171,6 +188,16 @@ configs:
     resource.compareoptions: |
       # disables status field diffing in specified resource types
       ignoreAggregatedRoles: true
+  rbac:
+    # All authenticated GitLab users get read-only access by default
+    policy.default: role:readonly
+    policy.csv: |
+      %{~ for group in sso_admin_groups ~}
+      g, ${group}, role:admin
+      %{~ endfor ~}
+    # GitLab sends group membership in the 'groups_direct' claim
+    # https://docs.gitlab.com/integration/openid_connect_provider/
+    scopes: '[groups_direct]'
 
 server:
   autoscaling:

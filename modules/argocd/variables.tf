@@ -32,3 +32,25 @@ variable "root_app_target_revision" {
   type        = string
   default     = "main"
 }
+
+variable "gitlab_url" {
+  description = "Base URL of the self-hosted GitLab instance used as OIDC provider"
+  type        = string
+}
+
+variable "oidc_client_id" {
+  description = "GitLab OAuth2 application client ID for ArgoCD SSO"
+  type        = string
+}
+
+variable "oidc_client_secret" {
+  description = "GitLab OAuth2 application client secret for ArgoCD SSO"
+  type        = string
+  sensitive   = true
+}
+
+variable "sso_admin_groups" {
+  description = "GitLab group paths (full path, e.g. 'myorg/admins') to grant ArgoCD admin role"
+  type        = list(string)
+  default     = []
+}

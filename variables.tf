@@ -60,3 +60,26 @@ variable "argocd_repo_password" {
   sensitive   = true
   default     = null
 }
+
+variable "argocd_gitlab_url" {
+  description = "Base URL of the GitLab instance used as OIDC provider for ArgoCD SSO"
+  type        = string
+  default     = "https://gitlab.home.rottlr.de"
+}
+
+variable "argocd_oidc_client_id" {
+  description = "GitLab OAuth2 application client ID for ArgoCD SSO"
+  type        = string
+}
+
+variable "argocd_oidc_client_secret" {
+  description = "GitLab OAuth2 application client secret for ArgoCD SSO"
+  type        = string
+  sensitive   = true
+}
+
+variable "argocd_sso_admin_groups" {
+  description = "GitLab group paths to grant ArgoCD admin role"
+  type        = list(string)
+  default     = ["idp/platform"]
+}

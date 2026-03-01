@@ -86,6 +86,10 @@ module "argocd" {
   source = "./modules/argocd/"
 
   argocd_url               = var.argocd_url
+  gitlab_url               = var.argocd_gitlab_url
+  oidc_client_id           = var.argocd_oidc_client_id
+  oidc_client_secret       = var.argocd_oidc_client_secret
+  sso_admin_groups         = var.argocd_sso_admin_groups
   repo_url                 = var.argocd_repo_url
   repo_username            = var.argocd_repo_username
   repo_password            = var.argocd_repo_password
