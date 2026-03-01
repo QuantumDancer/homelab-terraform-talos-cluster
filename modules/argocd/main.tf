@@ -69,10 +69,40 @@ resource "kubernetes_secret_v1" "repo_credentials" {
   }
 }
 
+resource "kubernetes_manifest" "platform_project" {
+  depends_on = [helm_release.argocd]
+
+  manifest = {
+    apiVersion = "argoproj.io/v1alpha1"
+    kind       = "AppProject"
+    metadata = {
+      name      = "platform"
+      namespace = local.namespace
+    }
+    spec = {
+      description = "Platform infrastructure"
+      sourceRepos = ["*"]
+      destinations = [
+        {
+          namespace = "*"
+          server    = "https://kubernetes.default.svc"
+        }
+      ]
+      # Platform apps manage cluster-level resources (CRDs, ClusterRoles, etc.)
+      clusterResourceWhitelist = [
+        {
+          group = "*"
+          kind  = "*"
+        }
+      ]
+    }
+  }
+}
+
 resource "kubernetes_manifest" "root_app" {
   depends_on = [
-    helm_release.argocd,
-    kubernetes_secret_v1.repo_credentials
+    kubernetes_manifest.platform_project,
+    kubernetes_secret_v1.repo_credentials,
   ]
 
   manifest = {
@@ -83,7 +113,7 @@ resource "kubernetes_manifest" "root_app" {
       namespace = local.namespace
     }
     spec = {
-      project = "default"
+      project = "platform"
 
       source = {
         repoURL        = var.repo_url

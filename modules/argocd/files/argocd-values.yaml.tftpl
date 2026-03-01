@@ -189,8 +189,8 @@ configs:
       # disables status field diffing in specified resource types
       ignoreAggregatedRoles: true
   rbac:
-    # All authenticated GitLab users get read-only access by default
-    policy.default: role:readonly
+    # No default access, users must be explicitly granted access to a project.
+    policy.default: ""
     policy.csv: |
       %{~ for group in sso_admin_groups ~}
       g, ${group}, role:admin
