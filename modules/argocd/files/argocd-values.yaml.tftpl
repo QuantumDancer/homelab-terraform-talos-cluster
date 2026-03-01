@@ -1,7 +1,3 @@
-dex:
-  # Direct OIDC to GitLab is used instead; Dex adds unnecessary complexity
-  enabled: false
-
 redis-ha:
   enabled: true
 
@@ -35,18 +31,21 @@ configs:
     url: ${argocd_url}
     # https://argo-cd.readthedocs.io/en/stable/faq/#how-to-disable-admin-user
     admin.enabled: "false"
-    # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#existing-oidc-provider
-    oidc.config: |
-      name: GitLab
-      issuer: ${gitlab_url}
-      clientID: ${oidc_client_id}
-      # References key 'clientSecret' from Kubernetes secret 'argocd-oidc-gitlab'
-      clientSecret: $argocd-oidc-gitlab:clientSecret
-      requestedScopes:
-        - openid
-        - profile
-        - email
-    # Crossplane configuration: https://docs.crossplane.io/latest/guides/crossplane-with-argo-cd/
+    # Dex connector: Dex exchanges the auth code with GitLab, stores the refresh
+    # token, and silently reissues ArgoCD tokens without prompting the user again.
+    # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/
+    dex.config: |
+      connectors:
+        - type: gitlab
+          id: gitlab
+          name: GitLab
+          config:
+            baseURL: ${gitlab_url}
+            clientID: ${oidc_client_id}
+            # References key 'clientSecret' from Kubernetes secret 'argocd-oidc-gitlab'
+            clientSecret: $argocd-oidc-gitlab:clientSecret
+            redirectURI: ${argocd_url}/api/dex/callback
+    # # ArgoCD session lifetime; Dex handles silent token refresh within this window.
     application.resourceTrackingMethod: annotation
     resource.customizations: |
       "*.upbound.io/*":
@@ -195,9 +194,8 @@ configs:
       %{~ for group in sso_admin_groups ~}
       g, ${group}, role:admin
       %{~ endfor ~}
-    # GitLab sends group membership in the 'groups_direct' claim
-    # https://docs.gitlab.com/integration/openid_connect_provider/
-    scopes: '[groups_direct]'
+    # Dex fetches group memberships via the GitLab API and exposes them in 'groups'
+    scopes: '[groups]'
 
 server:
   autoscaling:
