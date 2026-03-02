@@ -45,7 +45,9 @@ configs:
             # References key 'clientSecret' from Kubernetes secret 'argocd-oidc-gitlab'
             clientSecret: $argocd-oidc-gitlab:clientSecret
             redirectURI: ${argocd_url}/api/dex/callback
-    # # ArgoCD session lifetime; Dex handles silent token refresh within this window.
+    # Account for Backstage
+    accounts.backstage: apiKey
+    # Crossplane configuration: https://docs.crossplane.io/latest/guides/crossplane-with-argo-cd/
     application.resourceTrackingMethod: annotation
     resource.customizations: |
       "*.upbound.io/*":
@@ -194,6 +196,9 @@ configs:
       %{~ for group in sso_admin_groups ~}
       g, ${group}, role:admin
       %{~ endfor ~}
+      p, backstage, applications, get, */*, allow
+      p, backstage, clusters, get, *, allow
+      p, backstage, repositories, get, *, allow
     # Dex fetches group memberships via the GitLab API and exposes them in 'groups'
     scopes: '[groups]'
 
