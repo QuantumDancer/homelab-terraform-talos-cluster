@@ -14,6 +14,7 @@ module "talos" {
       proxmox_node_name = "proxmox-01"
       vm_id             = 351
       ip                = "192.168.30.51"
+      cpu               = 8
       memory            = 10240
       additional_disks = {
         "longhorn" = {
@@ -29,6 +30,7 @@ module "talos" {
       proxmox_node_name = "proxmox-01"
       vm_id             = 352
       ip                = "192.168.30.52"
+      cpu               = 8
       memory            = 10240
       additional_disks = {
         "longhorn" = {
@@ -44,6 +46,7 @@ module "talos" {
       proxmox_node_name = "proxmox-01"
       vm_id             = 353
       ip                = "192.168.30.53"
+      cpu               = 8
       memory            = 10240
       additional_disks = {
         "longhorn" = {
