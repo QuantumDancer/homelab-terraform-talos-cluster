@@ -121,11 +121,11 @@ resource "kubernetes_manifest" "root_app" {
         path           = var.root_app_path
         helm = {
           releaseName = "platform-apps"
+          valueFiles = [
+            "values.yaml",
+            "environments/homelab.yaml"
+          ],
           parameters = [
-            {
-              name  = "environment"
-              value = "homelab"
-            },
             {
               name  = "longhorn.enabled"
               value = "true"
