@@ -1,0 +1,38 @@
+applications:
+  platform-root-app:
+    namespace: ${namespace}
+    project: platform
+    # https://argo-cd.readthedocs.io/en/latest/user-guide/app_deletion/
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    source:
+      repoURL: ${repo_url}
+      targetRevision: ${target_revision}
+      path: ${path}
+      helm:
+        releaseName: platform-apps
+        valueFiles:
+          - values.yaml
+          - environments/${environment}.yaml
+        parameters:
+          - name: longhorn.enabled
+            value: "true"
+          - name: networkingConfig.enabled
+            value: "true"
+          - name: gatewayApiCrds.enabled
+            value: "true"
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: ${namespace}
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      syncOptions:
+        - CreateNamespace=true
+      retry:
+        limit: 5
+        backoff:
+          duration: 5s
+          factor: 2
+          maxDuration: 3m

@@ -1,0 +1,13 @@
+projects:
+  platform:
+    namespace: ${namespace}
+    description: Platform infrastructure
+    sourceRepos:
+      - "*"
+    destinations:
+      - namespace: "*"
+        server: https://kubernetes.default.svc
+    # Platform apps manage cluster-level resources (CRDs, ClusterRoles, etc.)
+    clusterResourceWhitelist:
+      - group: "*"
+        kind: "*"

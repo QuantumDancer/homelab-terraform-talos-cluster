@@ -33,6 +33,12 @@ variable "root_app_target_revision" {
   default     = "main"
 }
 
+variable "environment" {
+  description = "Environment name, used to select the Helm values overlay (environments/<name>.yaml)"
+  type        = string
+  default     = "homelab"
+}
+
 variable "gitlab_url" {
   description = "Base URL of the self-hosted GitLab instance used as OIDC provider"
   type        = string
