@@ -12,7 +12,7 @@ resource "talos_image_factory_schematic" "update" {
 resource "proxmox_virtual_environment_download_file" "this" {
   content_type            = "iso"
   datastore_id            = var.image.proxmox_datastore_id
-  file_name               = "talos-${local.image_id}-${var.image.platform}-${var.image.arch}_current.img"
+  file_name               = "talos-${local.cluster_name}-${local.image_id}-${var.image.platform}-${var.image.arch}_current.img"
   node_name               = var.image.proxmox_node_name
   url                     = local.image_url
   decompression_algorithm = "gz"
@@ -24,7 +24,7 @@ resource "proxmox_virtual_environment_download_file" "update" {
 
   content_type            = "iso"
   datastore_id            = var.image.proxmox_datastore_id
-  file_name               = "talos-${local.update_image_id}-${var.image.platform}-${var.image.arch}_update.img"
+  file_name               = "talos-${local.cluster_name}-${local.update_image_id}-${var.image.platform}-${var.image.arch}_update.img"
   node_name               = var.image.proxmox_node_name
   url                     = local.update_image_url
   decompression_algorithm = "gz"

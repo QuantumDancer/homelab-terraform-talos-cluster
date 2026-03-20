@@ -42,6 +42,7 @@ variable "cluster" {
     kubernetes_api_vip              = string                            # VIP of the Kubernetes API
     pod_cidr                        = optional(string, "10.244.0.0/16") # Pod CIDR for Kubernetes cluster
     service_cidr                    = optional(string, "10.96.0.0/12")  # Service CIDR for Kubernetes cluster
+    longhorn_enabled                = optional(bool, true)              # Set false to skip Longhorn kernel modules, mounts, and volume config
   })
 }
 

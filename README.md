@@ -98,18 +98,61 @@ argocd_repo_url = "https://github.com/QuantumDancer/idp-argocd-platform-apps.git
 
 ## Initial cluster creation
 
-Run the following commands:
+On a brand-new cluster, the Cilium Helm provider performs a health check during `terraform plan` that will fail
+because the cluster does not exist yet. Target the talos modules first, then apply the rest:
 
 ```bash
 terraform init
-terraform plan
+terraform apply -target=module.management_cluster
+terraform apply -target=module.talos
+# Manual kubelet CSR approval - see below
 terraform apply
 ```
 
 After successful deployment, retrieve the Talos and Kubernetes configuration:
 
 ```bash
+# Normal cluster
 source ./scripts/activate_configs.sh
+
+# Management cluster
+source ./scripts/activate_configs.sh
+```
+
+### Manual kubelet CSR approval
+
+`serverTLSBootstrap` creates a chicken-and-egg deadlock on fresh clusters: the kubelet serving CSR cannot be
+approved until the `kubelet-serving-cert-approver` pod is running, but that pod needs a Ready node, and the node
+needs its CSR approved.
+
+Break the cycle manually after the partial apply (`terraform apply -target=...`)
+
+```bash
+kubectl get csr
+# NAME        AGE     SIGNERNAME                                    REQUESTOR                 REQUESTEDDURATION   CONDITION
+# csr-6m6b9   5m14s   kubernetes.io/kubelet-serving                 system:node:mgt1          <none>              Pending
+# csr-x8x2m   5m22s   kubernetes.io/kube-apiserver-client-kubelet   system:bootstrap:1hgl53   <none>              Approved,Issued
+
+kubectl certificate approve csr-6m6b9
+# certificatesigningrequest.certificates.k8s.io/csr-6m6b9 approved
+```
+
+**Note:** For a multi-node cluster, this needs to be done on all nodes.
+
+After approval, run the full `terraform apply` command.
+This will deploy Cilium, which will move the nodes to the `Ready` state.
+`kubelet-serving-cert-approver` will eventually start, so any new nodes joining the cluster (or nodes being recycled during updates), will automatically get their certificates approved.
+
+## Gotchas
+
+### Recreating a single-node cluster
+
+When recreating a cluster backed by a single node, taint also the `talos_machine_bootstrap` resource, not only the `proxmox_virtual_environment_vm` resource.
+This way, Terraform re-runs the bootstrap step.
+The bootstrap state is not reset when only the VM is recreated.
+
+```bash
+terraform taint 'module.management_cluster.talos_machine_bootstrap.this'
 ```
 
 ## Maintenance

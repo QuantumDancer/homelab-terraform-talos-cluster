@@ -1,14 +1,18 @@
-data "talos_cluster_health" "before_cilium" {
-  client_configuration   = talos_machine_secrets.this.client_configuration
-  control_plane_nodes    = [for k, v in var.nodes : v.ip if v.machine_type == "controlplane"]
-  worker_nodes           = [for k, v in var.nodes : v.ip if v.machine_type == "worker"]
-  endpoints              = [for k, v in var.nodes : v.ip if v.machine_type == "controlplane"]
-  skip_kubernetes_checks = true
+locals {
+  # Single-node clusters need only one operator replica (Helm chart default is 2)
+  # The operator deployment uses podAntiAffinity based on the kubernetes.io/hostname label,
+  # so for a single-node cluster, the operator deployment will be stuck with one replica instead of two
+  operator_replicas = length(var.control_plane_ips) + length(var.worker_ips) > 1 ? 2 : 1
+}
 
-  depends_on = [
-    talos_machine_bootstrap.this,
-    talos_cluster_kubeconfig.this
-  ]
+# Wait for Talos to be ready before installing Cilium. Kubernetes checks are
+# skipped because the API server won't pass them until CNI is running.
+data "talos_cluster_health" "pre_install" {
+  client_configuration   = var.client_configuration
+  control_plane_nodes    = var.control_plane_ips
+  worker_nodes           = var.worker_ips
+  endpoints              = var.control_plane_ips
+  skip_kubernetes_checks = true
 
   timeouts = {
     read = "10m"
@@ -17,14 +21,12 @@ data "talos_cluster_health" "before_cilium" {
 
 # https://www.talos.dev/v1.10/kubernetes-guides/network/deploying-cilium/#method-1-helm-install
 resource "helm_release" "cilium" {
-  depends_on = [
-    data.talos_cluster_health.before_cilium
-  ]
+  depends_on = [data.talos_cluster_health.pre_install]
 
   name       = "cilium"
   repository = "https://helm.cilium.io/"
   chart      = "cilium"
-  version    = "1.19.1" # renovate: github-releases=cilium/cilium
+  version    = var.cilium_version
   namespace  = "kube-system"
 
   # Talos specific settings (with KubeProxy replacement)
@@ -80,6 +82,10 @@ resource "helm_release" "cilium" {
       name  = "operator.rollOutPods"
       value = "true"
     },
+    {
+      name  = "operator.replicas"
+      value = local.operator_replicas
+    },
     # https://docs.cilium.io/en/stable/network/bgp-control-plane/bgp-control-plane/
     {
       name  = "bgpControlPlane.enabled"
@@ -97,18 +103,15 @@ resource "helm_release" "cilium" {
       value = true
     }
   ]
-
 }
 
-data "talos_cluster_health" "after_cilium" {
-  client_configuration = talos_machine_secrets.this.client_configuration
-  control_plane_nodes  = [for k, v in var.nodes : v.ip if v.machine_type == "controlplane"]
-  worker_nodes         = [for k, v in var.nodes : v.ip if v.machine_type == "worker"]
-  endpoints            = [for k, v in var.nodes : v.ip if v.machine_type == "controlplane"]
+data "talos_cluster_health" "post_install" {
+  client_configuration = var.client_configuration
+  control_plane_nodes  = var.control_plane_ips
+  worker_nodes         = var.worker_ips
+  endpoints            = var.control_plane_ips
 
-  depends_on = [
-    helm_release.cilium
-  ]
+  depends_on = [helm_release.cilium]
 
   timeouts = {
     read = "10m"

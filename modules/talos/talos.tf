@@ -16,23 +16,27 @@ data "talos_machine_configuration" "controlplane" {
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   talos_version      = var.cluster.talos_version
   kubernetes_version = var.cluster.kubernetes_version
-  config_patches = [
-    file("${path.module}/files/patch-controlplane-scheduling.yaml"),
-    templatefile("${path.module}/templates/patch-networking.yaml.tmpl", {
-      pod_cidr     = var.cluster.pod_cidr
-      service_cidr = var.cluster.service_cidr
-    }),
-    yamlencode({
-      cluster = {
-        extraManifests = [
-          "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v0.10.0/deploy/ha-install.yaml",
-          "https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.7.2/components.yaml"
-        ]
-      }
-    }),
-    file("${path.module}/files/patch-longhorn-uservolumeconfig.yaml"),
-    file("${path.module}/files/patch-longhorn-machineconfig.yaml")
-  ]
+  config_patches = concat(
+    [
+      file("${path.module}/files/patch-controlplane-scheduling.yaml"),
+      templatefile("${path.module}/templates/patch-networking.yaml.tmpl", {
+        pod_cidr     = var.cluster.pod_cidr
+        service_cidr = var.cluster.service_cidr
+      }),
+      yamlencode({
+        cluster = {
+          extraManifests = [
+            # Single-node clusters cannot tolerate HA pod scheduling constraints
+            local.controlplane_count > 1
+            ? "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v0.10.0/deploy/ha-install.yaml"
+            : "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v0.10.0/deploy/standalone-install.yaml",
+            "https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.7.2/components.yaml"
+          ]
+        }
+      }),
+    ],
+    local.longhorn_patches
+  )
 }
 
 data "talos_machine_configuration" "worker" {
@@ -42,14 +46,15 @@ data "talos_machine_configuration" "worker" {
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   talos_version      = var.cluster.talos_version
   kubernetes_version = var.cluster.kubernetes_version
-  config_patches = [
-    templatefile("${path.module}/templates/patch-networking.yaml.tmpl", {
-      pod_cidr     = var.cluster.pod_cidr
-      service_cidr = var.cluster.service_cidr
-    }),
-    file("${path.module}/files/patch-longhorn-uservolumeconfig.yaml"),
-    file("${path.module}/files/patch-longhorn-machineconfig.yaml")
-  ]
+  config_patches = concat(
+    [
+      templatefile("${path.module}/templates/patch-networking.yaml.tmpl", {
+        pod_cidr     = var.cluster.pod_cidr
+        service_cidr = var.cluster.service_cidr
+      }),
+    ],
+    local.longhorn_patches
+  )
 }
 
 resource "talos_machine_configuration_apply" "controlplane" {
