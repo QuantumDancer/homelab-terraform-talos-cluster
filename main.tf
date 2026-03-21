@@ -58,6 +58,24 @@ module "cilium_management" {
   worker_ips           = module.management_cluster.worker_ips
 }
 
+module "vault_config_management" {
+  source = "./modules/vault-config/"
+
+  providers = {
+    kubernetes.this = kubernetes.management
+    vault           = vault
+  }
+
+  cluster_name        = "management"
+  cluster_endpoint    = yamldecode(module.management_cluster.kube_config).clusters[0].cluster.server
+  cluster_ca_cert_pem = base64decode(yamldecode(module.management_cluster.kube_config).clusters[0].cluster.certificate-authority-data)
+
+  vault_kv_mount        = "secrets"
+  vault_kv_secret_paths = ["idp"]
+
+  depends_on = [module.cilium_management]
+}
+
 #############################
 # 3-node Talos Linux Custer #
 #############################
@@ -153,6 +171,24 @@ module "cilium_talos" {
   client_configuration = module.talos.client_configuration
   control_plane_ips    = module.talos.control_plane_ips
   worker_ips           = module.talos.worker_ips
+}
+
+module "vault_config_talos" {
+  source = "./modules/vault-config/"
+
+  providers = {
+    kubernetes.this = kubernetes
+    vault           = vault
+  }
+
+  cluster_name        = "talos"
+  cluster_endpoint    = yamldecode(module.talos.kube_config).clusters[0].cluster.server
+  cluster_ca_cert_pem = base64decode(yamldecode(module.talos.kube_config).clusters[0].cluster.certificate-authority-data)
+
+  vault_kv_mount        = "secrets"
+  vault_kv_secret_paths = ["idp"]
+
+  depends_on = [module.cilium_talos]
 }
 
 module "argocd" {

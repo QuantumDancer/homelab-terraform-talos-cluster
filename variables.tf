@@ -34,6 +34,24 @@ variable "cloudflare_zone_id" {
   description = "Cloudflare Zone ID"
 }
 
+# Vault
+
+variable "vault_address" {
+  description = "Vault API endpoint"
+  type        = string
+}
+
+variable "vault_role_id" {
+  description = "AppRole role ID for Terraform's Vault authentication"
+  type        = string
+}
+
+variable "vault_secret_id" {
+  description = "AppRole secret ID for Terraform's Vault authentication"
+  type        = string
+  sensitive   = true
+}
+
 # ArgoCD
 
 variable "argocd_url" {

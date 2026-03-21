@@ -72,6 +72,39 @@ cloudflare_api_token = "<cloudflare-api-token>"
 cloudflare_zone_id   = "<cloudflare-zone-id>"
 ```
 
+#### HashiCorp Vault
+
+Terraform manages the HashiCorp Vault configuration for the External Secrets Operator (ESO), that will be deployed by the ArgoCD app-of-apps into the cluster.
+It provisions a Kubernetes auth backend per cluster (`kubernetes-talos`, `kubernetes-management`) and a policy granting ESO read access to the KV v2 secrets engine.
+
+To create credentials for Vault, run the following commands.
+
+```bash
+vault auth enable approle
+vault policy write terraform-admin - <<'EOF'
+path "*" {
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+EOF
+vault write auth/approle/role/terraform token_policies=terraform-admin secret_id_ttl=0 token_ttl=1h token_max_ttl=4h
+
+vault read -field=role_id auth/approle/role/terraform/role-id
+vault write -f -field=secret_id auth/approle/role/terraform/secret-id
+```
+
+This enables the approle authentication method, creates a policy and role for Terraform, and creates a role ID and secret ID.
+
+`secret_id_ttl=0` means the secret-id never expires. This is intentional: after the homelab has been shut down
+for an extended period, Terraform must still be able to authenticate without manual credential rotation.
+
+Store the output of the last two commands in the following variables and provide the address for HashiCorp Vault:
+
+```terraform
+vault_address   = "https://vault.home.rottlr.de"
+vault_role_id   = "<role-id>"
+vault_secret_id = "<secret-id>"
+```
+
 #### ArgoCD
 
 The `argocd` module bootstraps ArgoCD and the root app of the App-of-Apps pattern.
