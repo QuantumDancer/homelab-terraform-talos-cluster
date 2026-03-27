@@ -101,3 +101,16 @@ variable "argocd_sso_admin_groups" {
   type        = list(string)
   default     = ["idp/platform"]
 }
+
+# Flux
+
+variable "flux_gitlab_username" {
+  description = "GitLab deploy token username for Flux to authenticate to the GitOps repository"
+  type        = string
+}
+
+variable "flux_gitlab_token" {
+  description = "GitLab deploy token for Flux to authenticate to the GitOps repository"
+  type        = string
+  sensitive   = true
+}

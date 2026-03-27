@@ -70,10 +70,26 @@ module "vault_config_management" {
   cluster_endpoint    = yamldecode(module.management_cluster.kube_config).clusters[0].cluster.server
   cluster_ca_cert_pem = base64decode(yamldecode(module.management_cluster.kube_config).clusters[0].cluster.certificate-authority-data)
 
+  eso_namespace         = "external-secrets"
   vault_kv_mount        = "secrets"
   vault_kv_secret_paths = ["idp"]
 
   depends_on = [module.cilium_management]
+}
+
+module "flux_management" {
+  source = "./modules/flux"
+  providers = {
+    helm       = helm.management
+    kubernetes = kubernetes.management
+  }
+
+  cluster_size = "small"
+  git_url      = "https://gitlab.home.rottlr.de/homelab/flux-cluster-config.git"
+  git_username = var.flux_gitlab_username
+  git_token    = var.flux_gitlab_token
+  git_path     = "clusters/management"
+
 }
 
 #############################
